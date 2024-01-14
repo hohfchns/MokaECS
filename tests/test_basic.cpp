@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include "moka/ecs/core/ecs.hpp"
 #include "moka/ecs/core/component.h"
-#include "moka/singleton/singleton.hpp"
+#include "moka/logger/logger.h"
 
 using namespace moka::ecs;
+using namespace moka::log;
 
 namespace moka::tests
 {
@@ -121,7 +122,7 @@ TEST(ECSSystemTest, RealisticUsage) {
 
         if (renderSystem2 && renderable2) {
             // Simulate rendering: Output the entity and texture
-            std::cout << "Rendering Entity " << renderSystemEntity2 << " with texture: " << renderable2->texture << std::endl;
+            MOKA_LOGF_INFO("Rendering Entity %u with texture: %s", renderSystemEntity2, renderable2->texture);
         }
 
         // ... Add more update logic as needed
