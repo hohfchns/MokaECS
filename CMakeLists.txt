@@ -3,7 +3,7 @@ project(Moka)
 
 include("${CMAKE_CURRENT_SOURCE_DIR}/cmake/helpers.cmake")
 
-set(MOKA_ECS_DEPS MOKA_UTILS)
+set(MOKA_ECS_DEPS MOKA_UTILS MOKA_LOGGER)
 DEPENDENCIES(MOKA_ECS)
 
 # list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
@@ -32,8 +32,8 @@ set_property(TARGET MokaECS PROPERTY CXX_STANDARD 20)
 set_property(TARGET MokaECS PROPERTY CXX_STANDARD_REQUIRED 20)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-function")
 
-if(DEFINED ${UNIT_TESTS})
-  if (${TESTS_SOURCE_FILES})
+if(UNIT_TESTS)
+  if (TESTS_SOURCE_FILES)
     include(FetchContent)
     FetchContent_Declare(
       googletest

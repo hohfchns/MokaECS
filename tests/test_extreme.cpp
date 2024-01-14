@@ -3,8 +3,11 @@
 #include "moka/singleton/singleton.hpp"
 #include <random>
 #include <iostream>
+#include "moka/logger/logger.h"
+#include "moka/project/project.h"
 
 using namespace moka::ecs;
+using namespace moka::log;
 
 namespace moka::tests
 {
@@ -93,6 +96,9 @@ struct RenderSystem : public Component {
 
 // Test case for the ECS system using Singleton
 TEST(ECSSystemTest, StressTest) {
+    LoggerConfig loggerConfig{moka::project::exeDir() + "/log.log"};
+    loggerConfig.level = LogLevel::DEBUG;
+    Logger::GetActiveLogger()->SetConfig(loggerConfig);
     const int numEntities = 1000; // Adjust the number of entities based on your system's capabilities
 
     // Create a large number of entities with random combinations of components
@@ -131,14 +137,12 @@ TEST(ECSSystemTest, StressTest) {
             // Simulate various component interactions based on your system's logic
             // For simplicity, we'll just print the entity ID and some random values
 
-            std::cout << "Frame " << frame << ", Entity " << entity << ":";
+            MOKA_LOGF_DEBUG("Frame %d, Entity %u:", frame, entity);
 
             auto velocity = ECS::Get().GetComponentP<VelocityComponent>(entity);
             if (velocity) {
-                std::cout << " Velocity(" << velocity->vx << ", " << velocity->vy << ")";
+                MOKA_LOGF_DEBUG("Velocity(%f, %f)", velocity->vx, velocity->vy);
             }
-
-            std::cout << std::endl;
         }
 
         // ... Add more update logic as needed
