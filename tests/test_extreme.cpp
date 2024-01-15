@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
-#include "moka/ecs/core/component.h"
 #include <random>
+#include "moka/ecs/core/component.h"
+#include "moka/ecs/core/ecs.hpp"
 #include "moka/logger/logger.h"
+#include "moka/helpers/exceptions.h"
 
 using namespace moka::ecs;
 using namespace moka::log;
@@ -133,9 +135,19 @@ TEST(ECSSystemTest, StressTest) {
 
             MOKA_LOGF_INFO("Frame %d, Entity %u:", frame, entity);
 
-            auto velocity = ECS::Get().GetComponentP<VelocityComponent>(entity);
-            if (velocity) {
-                MOKA_LOGF_INFO("Velocity(%f, %f)", velocity->vx, velocity->vy);
+            try
+            {
+                auto velocity = ECS::Get().GetComponentP<VelocityComponent>(entity);
+
+                if (velocity) {
+                    MOKA_LOGF_INFO("Velocity(%f, %f)", velocity->vx, velocity->vy);
+                }
+            }
+            catch (const moka::bad_dealloc e)
+            {
+                FAIL();
+                std::cout << "FUCKKKK " << e.what() << std::endl;
+                return;
             }
         }
 
