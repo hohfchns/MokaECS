@@ -10,18 +10,20 @@
 #ifndef MOKA_ECS_NO_LOG
 #include "moka/logger/logger.h"
 #define _MOKA_ECS_LOGGING_ENABLED
-#define _MOKA_ECS_LOGGING_LEVEL INFO
+#ifndef MOKA_ECS_LOGGING_LEVEL 
+#define MOKA_ECS_LOGGING_LEVEL INFO
+#endif
 #ifndef MOKA_ECS_NO_LOG_FILE
 #include "moka/project/project.h"
 #define _MOKA_ECS_LOGGING_FILE_ENABLED
 #endif
 #endif
 
+  // moka::log::Logger::GetLogger("ecs").Log(moka::log::LogLevel::level, str, __LINE__, __FILE__)
+  // ECS::Get().GetLogger().LogFormat(moka::log::LogLevel::level, format, __LINE__, __FILE__, __VA_ARGS__)
 #ifdef _MOKA_ECS_LOGGING_ENABLED
-#define _MOKA_ECS_LOG(level, str) \
-  ECS::Get().GetLogger().Log(moka::log::LogLevel::level, str, __LINE__, __FILE__)
-#define _MOKA_ECS_LOGF(level, format, ...) \
-  ECS::Get().GetLogger().LogFormat(moka::log::LogLevel::level, format, __LINE__, __FILE__, __VA_ARGS__)
+#define _MOKA_ECS_LOG(level, str) MOKA_LOG("ecs", moka::log::LogLevel::level, str)
+#define _MOKA_ECS_LOGF(level, format, ...) MOKA_LOGF("ecs", moka::log::LogLevel::level, format, __VA_ARGS__)
 #else
 #define _MOKA_ECS_LOG(level, str)
 #define _MOKA_ECS_LOGF(level, format, ...)
@@ -41,10 +43,13 @@ friend class ComponentPtr;
 private:
   ECS()
   {
+#ifdef _MOKA_ECS_LOGGING_ENABLED
+    moka::log::Logger::RegisterLogger("ecs");
+#endif
 #ifdef _MOKA_ECS_LOGGING_FILE_ENABLED
   moka::log::LoggerConfig loggerConfig{moka::project::exeDir() + "/ECS.log"};
-  loggerConfig.level = moka::log::LogLevel::_MOKA_ECS_LOGGING_LEVEL;
-  _logger.SetConfig(loggerConfig);
+  loggerConfig.level = moka::log::LogLevel::MOKA_ECS_LOGGING_LEVEL;
+  moka::log::Logger::GetLogger("ecs")->SetConfig(loggerConfig);
 #endif
   }
 
@@ -62,23 +67,11 @@ protected:
   std::unordered_map<const char*, void*> _components = std::unordered_map<const char*, void*>();
   std::unordered_map<const char*, std::unordered_map<Entity, size_t>> _componentIndexes = std::unordered_map<const char*, std::unordered_map<Entity, size_t>>();
 
-#ifdef _MOKA_ECS_LOGGING_ENABLED
-private:
-  moka::log::Logger _logger;
-#endif
-
 public:
   static ECS& Get()
   {
     return moka::misc::Singleton<moka::ecs::ECS>::Ref();
   }
-
-#ifdef _MOKA_ECS_LOGGING_ENABLED
-  const moka::log::Logger& GetLogger()
-  {
-    return _logger;
-  }
-#endif
 
   Entity newEntity()
   {

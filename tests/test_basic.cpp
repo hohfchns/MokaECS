@@ -85,6 +85,8 @@ struct RenderSystem : public Component {
 
 // Test case for the ECS system using Singleton
 TEST(ECSSystemTest, RealisticUsage) {
+    moka::log::Logger::RegisterLogger("ecs");
+
     // Create entities with different components
     Entity entity1 = ECS::Get().newEntity();
     ECS::Get().AddComponent<PositionComponent>(entity1);
@@ -122,7 +124,7 @@ TEST(ECSSystemTest, RealisticUsage) {
 
         if (renderSystem2 && renderable2) {
             // Simulate rendering: Output the entity and texture
-            MOKA_LOGF_INFO("Rendering Entity %u with texture: %s", renderSystemEntity2, renderable2->texture);
+            MOKA_LOGF_INFO("ecs", "Rendering Entity %u with texture: %s", renderSystemEntity2, renderable2->texture);
         }
 
         // ... Add more update logic as needed

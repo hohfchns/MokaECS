@@ -95,6 +95,8 @@ struct RenderSystem : public Component {
 
 // Test case for the ECS system using Singleton
 TEST(ECSSystemTest, StressTest) {
+    moka::log::Logger::RegisterLogger("ecs");
+     
     const int numEntities = 1000; // Adjust the number of entities based on your system's capabilities
 
     // Create a large number of entities with random combinations of components
@@ -133,20 +135,19 @@ TEST(ECSSystemTest, StressTest) {
             // Simulate various component interactions based on your system's logic
             // For simplicity, we'll just print the entity ID and some random values
 
-            MOKA_LOGF_INFO("Frame %d, Entity %u:", frame, entity);
+            MOKA_LOGF_INFO("ecs", "Frame %d, Entity %u:", frame, entity);
 
             try
             {
                 auto velocity = ECS::Get().GetComponentP<VelocityComponent>(entity);
 
                 if (velocity) {
-                    MOKA_LOGF_INFO("Velocity(%f, %f)", velocity->vx, velocity->vy);
+                    MOKA_LOGF_INFO("ecs", "Velocity(%f, %f)", velocity->vx, velocity->vy);
                 }
             }
             catch (const moka::bad_dealloc e)
             {
                 FAIL();
-                std::cout << "FUCKKKK " << e.what() << std::endl;
                 return;
             }
         }
