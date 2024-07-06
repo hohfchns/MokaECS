@@ -23,6 +23,12 @@ public:
     _entity = parentSystem.GetEntity(); 
   }
 
+  System(System&& parentSystem) 
+  { 
+    _entity = parentSystem.GetEntity(); 
+    parentSystem._entity = MOKA_INVALID_ENTITY;
+  }
+
   template<typename T>
   T& GetComponent()
   {
@@ -33,6 +39,12 @@ public:
     }
 
     return *get;
+  }
+
+  template<typename T>
+  ComponentPtr<T> GetComponentP()
+  {
+    return ECS::Get().GetComponentP<T>(_entity);
   }
 
   template<typename T>
