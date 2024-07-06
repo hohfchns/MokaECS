@@ -80,7 +80,7 @@ public:
   }
 
   template<class T>
-  bool AddComponent(Entity entity)
+  ComponentPtr<T> AddComponent(Entity entity)
   {
     _MOKA_ECS_LOGF(DEBUG, "Adding Component of typeid %s to entity %u", typeid(T).name(), entity);
     ComponentPtr<T> existingPtr = GetComponentP<T>(entity);
@@ -109,7 +109,7 @@ public:
     _MOKA_ECS_LOG(DEBUG, "Calling Component's _Init() function.");
     component->_Init();
 
-    return true;
+    return ComponentPtr<T>(entity);
   }
 
   // Defined in component_ptr.hpp;

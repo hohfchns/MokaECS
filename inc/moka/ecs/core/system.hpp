@@ -81,9 +81,10 @@ protected:
   int _entity;
 
   template<typename T>
-  void AddComponent()
+  ComponentPtr<T> AddComponent()
   {
     ECS::Get().AddComponent<T>(_entity);
+    return ComponentPtr<T>(_entity);
   }
 };
 
